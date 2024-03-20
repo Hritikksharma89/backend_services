@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Auth {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  User     User[]
+  email    String   @unique
+  password String
+  token    Tokens[]
+}
+
+model User {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  auth            Auth?     @relation(fields: [authId], references: [id])
+  authId          String?   @db.ObjectId
+  name            String
+  email           String    @unique
+  isEmailVerified Boolean   @default(false)
+  phone           Int?
+  bio             String?
+  role            Role      @default(User)
+  dob             DateTime? @db.Date
+  language        String?
+}
+
+model Church {
+  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
+  churchName         String
+  address            String?
+  city               String?
+  state              String?
+  zipCode            Int
+  socialMediaProfile String?
+  description        String?
+  image              String?
+  Event              Event[]
+}
+
+model Event {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  eventName   String
+  address     String?
+  date        DateTime @db.Date
+  time        DateTime @db.Date
+  description String?
+  image       String?
+  church      Church   @relation(fields: [churchId], references: [id])
+  churchId    String   @db.ObjectId
+}
+
+enum Role {
+  User
+  Admin
+}
+
+type Token {
+  expireAt DateTime @db.Date
+  token    String?
+}
+
+type Tokens {
+  access        Token?
+  refresh       Token?
+  resetPassword Token?
+  verifyEmail   Token?
+}
