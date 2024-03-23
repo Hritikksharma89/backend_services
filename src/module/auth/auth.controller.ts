@@ -13,6 +13,9 @@ import { sendResetPasswordEmail, sendSuccessfulRegistration } from '../email/ema
 import { Responses } from '../../lib/response'
 import { env } from '../../lib/env'
 import axios from 'axios'
+import { Auth, User } from '@prisma/client'
+import reqValidate from '../../lib/reqValidate'
+import AuthValidation from './auth.validation'
 
 const { comparePassword, encryptedPassword } = CryptoFactory()
 
@@ -29,7 +32,10 @@ const { comparePassword, encryptedPassword } = CryptoFactory()
  * Returns success message.
  */
 export const signUpController = tryCatch(async (req: Request, res: Response) => {
-  const { email, password, name } = req.body
+  const validate = await reqValidate(req, AuthValidation.signUp)
+  if (!validate.status) return Responses(res, validate.message[0], {}, {})
+  const payload: any = validate.body?.data
+  const { email, password, name } = payload
   const user = await db.user.findUnique({ where: { email } })
   if (user) return Responses(res, 'User already exists, Use different email')
   const newUser = await db.user.create({
