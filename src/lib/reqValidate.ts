@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { ZodError, ZodObject, z } from 'zod'
+import { z } from 'zod'
 
 interface IZObject {
   body?: z.AnyZodObject
@@ -18,9 +18,9 @@ const reqValidate = async (
   param?: { status?: boolean; data?: object }
 }> => {
   const body: any = zObject.body?.safeParse(req.body)
-  const query:any = zObject.query?.safeParse(req.query)
-  const param:any = zObject.params?.safeParse(req.params)
-  const errMessage = `${body?.error?.issues[0]?.validation + body?.error?.issues[0]?.message+query?.error?.issues[0]?.validation + query?.error?.issues[0]?.message+param?.error?.issues[0]?.validation + param?.error?.issues[0]?.message}`
+  const query: any = zObject.query?.safeParse(req.query)
+  const param: any = zObject.params?.safeParse(req.params)
+  const errMessage = `${body?.error?.issues[0]?.validation + body?.error?.issues[0]?.message + query?.error?.issues[0]?.validation + query?.error?.issues[0]?.message + param?.error?.issues[0]?.validation + param?.error?.issues[0]?.message}`
   if (!body?.success || !query?.success || !param?.success) {
     return {
       status: false,

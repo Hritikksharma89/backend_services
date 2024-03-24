@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 const AuthValidation = {
   signUp: {
@@ -19,7 +19,7 @@ const AuthValidation = {
     query: z.object({}),
     params: z.object({}),
   },
-  resetAuthPass: {
+  resetPassword: {
     body: z.object({
       newPassword: z.string().min(8),
       password: z.string().min(8),
@@ -27,15 +27,13 @@ const AuthValidation = {
     query: z.object({}),
     params: z.object({}),
   },
-  getAuthAll: {
-    body: z.object({}),
-    params: z.object({}),
-    query: z.object({
-      limit: z.string().optional(),
-      page: z.string().optional(),
-      sort: z.string().optional(),
+  forgotPassword: {
+    body: z.object({
+      email: z.string(),
     }),
+    query: z.object({}),
+    params: z.object({}),
   },
-};
+}
 
-export default AuthValidation;
+export default AuthValidation

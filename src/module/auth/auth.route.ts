@@ -3,23 +3,24 @@ import {
   forgotPassword,
   registerTokenValidate,
   resetPassword,
-  signInController,
+  signIn,
   signInGoogleCallbackController,
   signInGoogleController,
-  signUpController,
+  signUp,
   verifyResetPassword,
 } from './auth.controller'
 import { routeLogger } from '../../lib/logRoute'
+import tokenValidate from '../../lib/token.validate'
 
 const authRouter = Router()
 
-authRouter.post('/sign-up', signUpController)
-authRouter.post('/sign-in', signInController)
+authRouter.post('/sign-up', signUp)
+authRouter.post('/sign-in', signIn)
 authRouter.get('/sign-out')
 authRouter.get('/verify-email', registerTokenValidate)
-authRouter.post('/forgot-Password', forgotPassword)
-authRouter.post('/reset-Password', resetPassword)
-authRouter.get('/verify-reset-Password', verifyResetPassword)
+authRouter.post('/forgot-password', forgotPassword)
+authRouter.post('/reset-password', resetPassword)
+authRouter.get('/verify-reset-password', verifyResetPassword)
 authRouter.get('/google', signInGoogleController)
 authRouter.get('/api/google/callback', signInGoogleCallbackController)
 

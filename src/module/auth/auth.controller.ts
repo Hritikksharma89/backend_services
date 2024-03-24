@@ -19,25 +19,25 @@ import AuthValidation from './auth.validation'
 
 const { comparePassword, encryptedPassword } = CryptoFactory()
 
-/**
- * Signs up a new user.
- *
- * Checks if a user with the given email already exists.
- * If so, returns an error.
- *
- * Otherwise, creates a new user record in the database.
- * Generates a verification token and stores it in the auth record.
- * Sends a registration email with the verification token.
- *
- * Returns success message.
- */
-export const signUpController = tryCatch(async (req: Request, res: Response) => {
+// Exporting the signUp function using tryCatch to handle asynchronous operations and errors
+export const signUp = tryCatch(async (req: Request, res: Response) => {
+  // Validate the incoming request body using the signUp validation schema
   const validate = await reqValidate(req, AuthValidation.signUp)
+
+  // If validation fails, return an error response
   if (!validate.status) return Responses(res, validate.message[0], {}, {})
+
+  // Extract necessary data from the validated request body
   const payload: any = validate.body?.data
   const { email, password, name } = payload
+
+  // Check if a user with the provided email already exists
   const user = await db.user.findUnique({ where: { email } })
+
+  // If user already exists, return an error response
   if (user) return Responses(res, 'User already exists, Use different email')
+
+  // Create a new user with provided details and encrypt the password
   const newUser = await db.user.create({
     data: {
       email,
@@ -46,7 +46,11 @@ export const signUpController = tryCatch(async (req: Request, res: Response) => 
     },
     include: { auth: true },
   })
+
+  // Generate a verification token for the newly registered user
   const token = generateRegisterVerificationTokens(newUser.id, newUser.role)
+
+  // Update the authentication entry with the verification token
   await db.auth.update({
     where: { id: newUser.authId! },
     data: {
@@ -55,32 +59,44 @@ export const signUpController = tryCatch(async (req: Request, res: Response) => 
       },
     },
   })
+
+  // Send a successful registration email to the user
   await sendSuccessfulRegistration(email, (await token).access.token, newUser.name)
+
+  // Return a success response
   return Responses(res, 'Sign-up Successfully, Please check your E-mail')
 })
 
-export const signInController = tryCatch(async (req: Request, res: Response) => {
-  // Destructure email and password from the request body
-  const { email, password } = req.body
+// Exporting the signIn function using tryCatch to handle asynchronous operations and errors
+export const signIn = tryCatch(async (req: Request, res: Response) => {
+  // Validate the incoming request body using the signIn validation schema
+  const validate = await reqValidate(req, AuthValidation.signIn)
 
-  // Retrieve user information from the database based on email and auth email
+  // If validation fails, return an error response
+  if (!validate.status) return Responses(res, validate.message[0], {}, {})
+
+  // Extract necessary data from the validated request body
+  const payload: any = validate.body?.data
+  const { email, password } = payload
+
+  // Find the user by email, including the associated authentication data
   const user = await db.user.findUnique({
     where: { email, auth: { email } },
     include: { auth: true },
   })
 
-  // Check if no user is found with the provided email and return an error message
+  // If user not found, return an error response
   if (!user) return Responses(res, 'No User Found with this Email')
 
-  // Retrieve the user's password from the database
+  // Retrieve the user's password from the authentication data
   const userPassword = user.auth?.password
 
-  // Compare the provided password with the stored user password
+  // Compare the provided password with the stored password
   if (comparePassword(password, userPassword as string)) {
     // Generate authentication tokens for the user
     const token = await generateAuthTokens(user.id, user.role)
 
-    // Update the user's authentication information with the generated tokens
+    // Update the authentication entry with the generated tokens
     const updateAuth = await db.auth.update({
       where: { id: user.authId! },
       data: {
@@ -91,11 +107,11 @@ export const signInController = tryCatch(async (req: Request, res: Response) => 
       },
     })
 
-    // Return user information, generated tokens, and success message upon successful sign-in
+    // Return a success response along with user data and updated authentication details
     return Responses(res, 'Sign-in Successfully', { user, updateAuth })
   }
 
-  // Return error message if the provided email or password is invalid
+  // If password does not match, return an error response
   return Responses(res, 'Invalid Email or Password')
 })
 
@@ -142,13 +158,18 @@ export const registerTokenValidate = tryCatch(async (req: Request, res: Response
 })
 
 export const forgotPassword = tryCatch(async (req: Request, res: Response) => {
-  // Find a user in the database based on the provided email in the request body
+  // Validate the incoming request body using the signIn validation schema
+  const validate = await reqValidate(req, AuthValidation.forgotPassword)
+
+  // If validation fails, return an error response
+  if (!validate.status) return Responses(res, validate.message[0], {}, {})
+
   const user = await db.user.findFirst({
     where: {
       email: req.body.email,
     },
   })
-
+  console.log(user)
   // Check if no user is found with the provided email and return an error message
   if (!user) return Responses(res, 'No user found with this email')
 
