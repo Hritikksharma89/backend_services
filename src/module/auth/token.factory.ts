@@ -1,14 +1,10 @@
 import jwt from 'jsonwebtoken'
 // @ts-ignore
 import moment, { Moment } from 'moment'
-import { env } from '../../lib/env'
-
-export const tokenTypes = {
-  ACCESS: 'access',
-  REFRESH: 'refresh',
-  RESET_PASSWORD: 'resetPassword',
-  VERIFY_EMAIL: 'verifyEmail',
-}
+import { env } from '../../core'
+import { tokenTypes } from '../../core/constant'
+ 
+ 
 
 interface TokenPayload {
   exp: number

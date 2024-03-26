@@ -1,15 +1,14 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
-
-import tryCatch from '../../lib/trycatch'
+import { TC } from '../../core'
 
 const prisma = new PrismaClient()
 
-export const getAllChurchs = tryCatch(async (_req: Request, res: Response) =>
+export const getAll = TC(async (_req: Request, res: Response) =>
   res.send(await prisma.church.findMany()),
 )
 
-export const createChurch = tryCatch(async (req: Request, res: Response) =>
+export const create = TC(async (req: Request, res: Response) =>
   res.send(
     await prisma.church.create({
       data: req.body,
@@ -17,14 +16,14 @@ export const createChurch = tryCatch(async (req: Request, res: Response) =>
   ),
 )
 
-export const getChurchById = tryCatch(async (req: Request, res: Response) =>
+export const getById = TC(async (req: Request, res: Response) =>
   res.send(
     await prisma.church.findUnique({
       where: { id: req.params.id },
     }),
   ),
 )
-export const deleteChurchById = tryCatch(async (req: Request, res: Response) =>
+export const deleteById = TC(async (req: Request, res: Response) =>
   res.send(
     await prisma.church.delete({
       where: { id: req.params.id },
@@ -32,7 +31,7 @@ export const deleteChurchById = tryCatch(async (req: Request, res: Response) =>
   ),
 )
 
-export const updateChurchById = tryCatch(async (req: Request, res: Response) =>
+export const updateById = TC(async (req: Request, res: Response) =>
   res.send(
     await prisma.church.update({
       where: { id: req.params.id },

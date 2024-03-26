@@ -1,55 +1,25 @@
 import { z } from 'zod'
 
-const UserValidation = {
-  create: {
-    body: z.object({
-      name: z.string(),
-      email: z.string().email(),
-      phone: z.number().optional(),
-      emailVerified: z.boolean().optional(),
-      bio: z.string().optional(),
-      language: z.string().optional(),
-      dob: z.string().optional(),
-      role: z.string().optional(),
-    }),
-    params: z.object({}),
-    query: z.object({}),
-  },
-  delete: {
-    body: z.object({}),
-    params: z.object({
-      id: z.string().min(24).max(24),
-    }),
-    query: z.object({}),
-  },
-  getById: {
-    body: z.object({}),
-    params: z.object({
-      id: z.string().min(24).max(24),
-    }),
-    query: z.object({}),
-  },
-  getAll: {
-    body: z.object({}),
-    params: z.object({}),
-    query: z.object({
-      limit: z.string().optional(),
-      page: z.string().optional(),
-    }),
-  },
-  update: {
-    body: z.object({
-      name: z.string(),
-      phone: z.number().optional(),
-      emailVerified: z.boolean().optional(),
-      bio: z.string().optional(),
-      language: z.string().optional(),
-      dob: z.string().optional(),
-      role: z.string().default('User'),
-    }),
-    params: z.object({}),
-    query: z.object({}),
-  },
-}
+// User model
+const UserSchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  isEmailVerified: z.boolean(),
+  phoneNumber: z.number().optional(),
+  biography: z.string().optional(),
+  role: z.enum(['USER', 'ADMIN']),
+  dateOfBirth: z.date().optional(),
+  preferredLanguage: z.string().optional(),
+  events: z.array(z.string()).optional(),
+  churches: z.array(z.string()).optional(),
+  profileImageUrl: z.string().optional(),
+  passwordHash: z.string(),
+  otps: z.array(z.string()).optional(),
+})
 
-export default UserValidation
+const CreateUserSchema = UserSchema.pick({ name: true, email: true, passwordHash: true })
+const UpdateUserSchema = UserSchema.partial()
+
+type User = z.infer<typeof UserSchema>
+
+export { CreateUserSchema, UpdateUserSchema, User }

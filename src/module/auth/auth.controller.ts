@@ -1,26 +1,25 @@
+import axios from 'axios'
 import { Request, Response } from 'express'
-import tryCatch from '../../lib/trycatch'
-import db from '../../lib/db'
+import db from '../../core/db'
+import { env } from '../../core/env'
+import reqValidate from '../../core/reqValidate'
+import { Responses } from '../../core/response'
+import TC from '../../core/trycatch'
+import { sendResetPasswordEmail, sendSuccessfulRegistration } from '../email/email.services'
+import AuthValidation from './auth.validation'
 import CryptoFactory from './crypto.factory'
-import TokenFactory, {
+import {
   generateAuthTokens,
   generateForgotVerificationToken,
   generateRegisterVerificationTokens,
   tokenTypes,
   verifyToken,
 } from './token.factory'
-import { sendResetPasswordEmail, sendSuccessfulRegistration } from '../email/email.services'
-import { Responses } from '../../lib/response'
-import { env } from '../../lib/env'
-import axios from 'axios'
-import { Auth, User } from '@prisma/client'
-import reqValidate from '../../lib/reqValidate'
-import AuthValidation from './auth.validation'
 
 const { comparePassword, encryptedPassword } = CryptoFactory()
 
 // Exporting the signUp function using tryCatch to handle asynchronous operations and errors
-export const signUp = tryCatch(async (req: Request, res: Response) => {
+export const signUp = TC(async (req: Request, res: Response) => {
   // Validate the incoming request body using the signUp validation schema
   const validate = await reqValidate(req, AuthValidation.signUp)
 
@@ -68,7 +67,7 @@ export const signUp = tryCatch(async (req: Request, res: Response) => {
 })
 
 // Exporting the signIn function using tryCatch to handle asynchronous operations and errors
-export const signIn = tryCatch(async (req: Request, res: Response) => {
+export const signIn = TC(async (req: Request, res: Response) => {
   // Validate the incoming request body using the signIn validation schema
   const validate = await reqValidate(req, AuthValidation.signIn)
 
@@ -115,7 +114,7 @@ export const signIn = tryCatch(async (req: Request, res: Response) => {
   return Responses(res, 'Invalid Email or Password')
 })
 
-export const registerTokenValidate = tryCatch(async (req: Request, res: Response) => {
+export const registerTokenValidate = TC(async (req: Request, res: Response) => {
   // Received token from frontend
   const verifiedToken = verifyToken(`token ${req.query.token as string}`)
 
@@ -157,7 +156,7 @@ export const registerTokenValidate = tryCatch(async (req: Request, res: Response
   }
 })
 
-export const forgotPassword = tryCatch(async (req: Request, res: Response) => {
+export const forgotPassword = TC(async (req: Request, res: Response) => {
   // Validate the incoming request body using the signIn validation schema
   const validate = await reqValidate(req, AuthValidation.forgotPassword)
 
@@ -196,7 +195,7 @@ export const forgotPassword = tryCatch(async (req: Request, res: Response) => {
   return Responses(res, 'Password Reset link sent to your email')
 })
 
-export const resetPassword = tryCatch(async (req: Request, res: Response) => {
+export const resetPassword = TC(async (req: Request, res: Response) => {
   // Destructure email, password, and newPassword from the request body
   const { email, password, newPassword } = req.body
 
@@ -231,7 +230,7 @@ export const resetPassword = tryCatch(async (req: Request, res: Response) => {
   return Responses(res, 'Invalid Email or Password')
 })
 
-export const verifyResetPassword = tryCatch(async (req: Request, res: Response) => {
+export const verifyResetPassword = TC(async (req: Request, res: Response) => {
   // Destructure token and newPassword from the request query parameters
   const { token, newPassword } = req.query
 
@@ -276,12 +275,12 @@ export const verifyResetPassword = tryCatch(async (req: Request, res: Response) 
   }
 })
 
-export const signInGoogleController = tryCatch(async (req: Request, res: Response) => {
+export const signInGoogleController = TC(async (req: Request, res: Response) => {
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${env.CLIENT_ID}&redirect_uri=${env.REDIRECT_URI}&response_type=code&scope=profile email`
   res.redirect(url)
 })
 
-export const signInGoogleCallbackController = tryCatch(async (req: Request, res: Response) => {
+export const signInGoogleCallbackController = TC(async (req: Request, res: Response) => {
   const { code } = req.query
 
   // Exchange authorization code for access token

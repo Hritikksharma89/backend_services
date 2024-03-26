@@ -1,13 +1,17 @@
 import { Router } from 'express'
 import { create, deleteById, getAll, getById, updateById } from './user.controller'
-import tokenValidate from '../../lib/token.validate'
+import { ROUTE } from '../../core/constant'
+import { validate } from '../../middleware/validate'
+import { CreateUserSchema, UpdateUserSchema } from './user.validation'
 
 const userRoute = Router()
 
-userRoute.get('/', getAll)
-userRoute.get('/:id', getById)
-userRoute.post('/', create)
-userRoute.delete('/:id', deleteById)
-userRoute.put('/:id', updateById)
+userRoute.route(ROUTE.ROOT).get(getAll).post(validate(CreateUserSchema), create)
+
+userRoute
+  .route(ROUTE.ID)
+  .get(getById)
+  .patch(validate(UpdateUserSchema), updateById)
+  .delete(deleteById)
 
 export default userRoute

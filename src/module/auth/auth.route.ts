@@ -1,4 +1,5 @@
 import { Router } from 'express'
+// import { routeLogger } from '../../core/logRoute'
 import {
   forgotPassword,
   registerTokenValidate,
@@ -9,8 +10,6 @@ import {
   signUp,
   verifyResetPassword,
 } from './auth.controller'
-import { routeLogger } from '../../lib/logRoute'
-import tokenValidate from '../../lib/token.validate'
 
 const authRouter = Router()
 
@@ -24,6 +23,6 @@ authRouter.get('/verify-reset-password', verifyResetPassword)
 authRouter.get('/google', signInGoogleController)
 authRouter.get('/api/google/callback', signInGoogleCallbackController)
 
-authRouter.use(routeLogger)
+// authRouter.use(routeLogger)
 
 export default authRouter

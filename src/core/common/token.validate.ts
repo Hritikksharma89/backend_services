@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
-import tryCatch from './trycatch'
-import { tokenTypes, verifyToken } from '../module/auth/token.factory'
-import db from './db'
-import logger from './log'
-
+import { TC } from './tc'
+import { verifyToken } from '../../module/auth/token.factory'
+import { tokenTypes } from '../constant'
+import { db } from '../database/database'
+ 
 // Middleware to validate access tokens
-const tokenValidate = tryCatch(async (req: Request, res: Response, next: NextFunction) => {
+const tokenValidate = TC(async (req: Request, res: Response, next: NextFunction) => {
   // Received token from frontend in the Authorization header
   const verifiedToken = verifyToken(req.headers.authorization as string)
 

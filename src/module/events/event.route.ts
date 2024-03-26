@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import tokenValidate from '../../lib/token.validate'
+import tokenValidate from '../../core/token.validate'
 import {
   createEvent,
   deleteEventById,
