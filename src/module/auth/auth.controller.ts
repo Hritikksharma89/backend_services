@@ -1,10 +1,6 @@
 import axios from 'axios'
 import { Request, Response } from 'express'
-import db from '../../core/db'
-import { env } from '../../core/env'
-import reqValidate from '../../core/reqValidate'
-import { Responses } from '../../core/response'
-import TC from '../../core/trycatch'
+
 import { sendResetPasswordEmail, sendSuccessfulRegistration } from '../email/email.services'
 import AuthValidation from './auth.validation'
 import CryptoFactory from './crypto.factory'
@@ -12,9 +8,10 @@ import {
   generateAuthTokens,
   generateForgotVerificationToken,
   generateRegisterVerificationTokens,
-  tokenTypes,
+  
   verifyToken,
 } from './token.factory'
+import { Responses, TC } from '../../core'
 
 const { comparePassword, encryptedPassword } = CryptoFactory()
 

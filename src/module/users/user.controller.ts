@@ -18,7 +18,7 @@ export const create = TC(async (req: Request, res: Response) => {
 export const getById = TC(async (req: Request, res: Response) => {
   const user = await db.user.findUnique({ where: { id: req.params.id } })
   if (user) Responses(res, MESSAGES.USER.SUCCESS.READ, user)
-  if (!user) Responses(res, MESSAGES.USER.ERROR.CREATE)
+  if (!user) Responses(res, MESSAGES.USER.ERROR.READ)
 })
 
 export const deleteById = TC(async (req: Request, res: Response) => {
@@ -31,6 +31,7 @@ export const updateById = TC(async (req: Request, res: Response) => {
   const isUser = await db.user.findFirst({ where: { email: req.body.email } })
   if (!isUser) Responses(res, MESSAGES.USER.ERROR.UPDATE)
   if (isUser && isUser.email != req.body.email) Responses(res, MESSAGES.CANNOT_CHANGE_EMAIL)
+
   const user = await db.user.update({
     where: { id: req.params.id },
     data: req.body,

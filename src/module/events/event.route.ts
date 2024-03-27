@@ -1,20 +1,12 @@
 import { Router } from 'express'
 
-import tokenValidate from '../../core/token.validate'
-import {
-  createEvent,
-  deleteEventById,
-  getAllEvents,
-  getEventById,
-  updateEventById,
-} from './event.controller'
+import { ROUTE } from '../../core/constant'
+import { create, deleteById, getAll, getById, updateById } from './event.controller'
 
 const eventRoute = Router()
 
-eventRoute.get('/', getAllEvents)
-eventRoute.get('/:id', getEventById)
-eventRoute.post('/', createEvent)
-eventRoute.delete('/:id', tokenValidate, deleteEventById)
-eventRoute.put('/:id', updateEventById)
+eventRoute.route(ROUTE.ROOT).get(getAll).post(create)
+
+eventRoute.route(ROUTE.ID).get(getById).put(updateById).delete(deleteById)
 
 export default eventRoute
