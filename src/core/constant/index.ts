@@ -59,6 +59,7 @@ export const ROUTE = {
   ID: '/:id',
   CHURCH: '/church',
   DOCS: '/docs',
+  AUTH: '/auth',
   SIGN_IN: '/auth/signin',
   SIGN_UP: '/auth/signup',
   FORGOT_PASSWORD: '/auth/forgot-password',
@@ -186,5 +187,4 @@ export const MESSAGES = {
   SERVER_ERROR: 'Server error: Unexpected error occurred on the server',
   NETWORK_ERROR: 'Network error: Failed to connect to the server',
   CANNOT_CHANGE_EMAIL: 'Change of email is not allowed!',
-  
 }

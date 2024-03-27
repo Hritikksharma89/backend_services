@@ -3,8 +3,6 @@ import jwt from 'jsonwebtoken'
 import moment, { Moment } from 'moment'
 import { env } from '../../core'
 import { tokenTypes } from '../../core/constant'
- 
- 
 
 interface TokenPayload {
   exp: number

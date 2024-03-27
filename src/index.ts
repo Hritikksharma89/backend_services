@@ -3,6 +3,7 @@ import { env, logger } from './core'
 import { churchRoute, docsRoute, userRoute } from './module'
 import { CONSTANT, ROUTE } from './core/constant'
 import eventRoute from './module/events/event.route'
+import authRouter from './module/auth/auth.route'
 
 const app: Application = express()
 const PORT = env.PORT
@@ -14,6 +15,7 @@ app.use(ROUTE.CHURCH, churchRoute)
 app.use(ROUTE.DOCS, docsRoute)
 app.use(ROUTE.USERS, userRoute)
 app.use(ROUTE.EVENTS, eventRoute)
+app.use(ROUTE.AUTH, authRouter)
 
 app.listen(PORT, () => {
   try {
