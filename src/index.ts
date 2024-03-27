@@ -1,27 +1,31 @@
 import express, { Application } from 'express'
-import { env } from './lib/env'
-import docsRoute from './module/docs/docs.route'
-import userRoute from './module/users/user.route'
-import authRouter from './module/auth/auth.route'
-import logger from './lib/log'
-import churchRoute from './module/churche/church.route'
+import { env, logger } from './core'
+import { churchRoute, docsRoute, userRoute } from './module'
+import { CONSTANT, ROUTE } from './core/constant'
 import eventRoute from './module/events/event.route'
+import authRouter from './module/auth/auth.route'
 
 const app: Application = express()
-const port = env.PORT
+const PORT = env.PORT
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use('/docs', docsRoute)
-app.use('/users', userRoute)
-app.use('/auth', authRouter)
-app.use('/church', churchRoute)
-app.use('/event', eventRoute)
+app.use(ROUTE.CHURCH, churchRoute)
+app.use(ROUTE.DOCS, docsRoute)
+app.use(ROUTE.USERS, userRoute)
+app.use(ROUTE.EVENTS, eventRoute)
+app.use(ROUTE.AUTH, authRouter)
 
-app.listen(port, () => logger.info(`Server running on port ${port}`))
+app.listen(PORT, () => {
+  try {
+    logger.info(CONSTANT.SERVER_RUNNING + PORT, CONSTANT.SUCCESS)
+  } catch (error) {
+    logger.error(CONSTANT.SERVER_ERROR, error)
+  }
+})
 
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection at:', promise, 'reason:', reason)
+process.on(CONSTANT.UNHANDLED_REJECTION, (reason, promise) => {
+  logger.error(CONSTANT.UNHANDLED_REJECTION, promise, CONSTANT.REASON, reason)
   process.exit(1)
 })

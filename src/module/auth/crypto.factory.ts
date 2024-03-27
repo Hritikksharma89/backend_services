@@ -1,5 +1,5 @@
 import CryptoJS from 'crypto-js'
-import { env } from '../../lib/env'
+import { env } from '../../core'
 
 interface CryptoFactoryInterface {
   comparePassword: (password: string, dPassword: string) => boolean

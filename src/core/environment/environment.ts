@@ -1,15 +1,18 @@
 import * as dotenv from 'dotenv'
 import { z } from 'zod'
+import { CONSTANT } from '../constant'
 
 dotenv.config({
   path: '.env',
 })
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  NODE_ENV: z
+    .enum([CONSTANT.DEVELOPMENT, CONSTANT.PRODUCTION, CONSTANT.TEST])
+    .default(CONSTANT.DEVELOPMENT),
   PORT: z.string(),
-  DATABASE_URL: z.string().url('Invalid database URL'),
-  BASE_URL: z.string().url('Invalid base URL'),
+  DATABASE_URL: z.string().url(CONSTANT.INVALID_DATABASE_URL),
+  BASE_URL: z.string().url(CONSTANT.INVALID_BASE_URL),
   PASS_SECRET: z.string(),
   JWT_ACCESS_EXPIRATION_MINUTES: z.string(),
   JWT_REFRESH_EXPIRATION_DAYS: z.string(),

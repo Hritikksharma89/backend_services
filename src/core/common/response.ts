@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import logger from './log'
+import { logger } from '..'
 
 export const Responses = (res: Response, message: string, data?: object, error?: object) => {
   error == null && logger.info(message)
