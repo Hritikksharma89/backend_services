@@ -14,6 +14,42 @@ export const UserDocs = {
     '/users': {
       get: {
         summary: 'Get all users',
+        parameters: [
+          {
+            name: 'name',
+            in: 'query',
+            description: 'Filter users by name',
+            schema: {
+              type: 'string',
+            },
+          },
+          {
+            name: 'email',
+            in: 'query',
+            description: 'Filter users by email',
+            schema: {
+              type: 'string',
+            },
+          },
+          {
+            name: 'role',
+            in: 'query',
+            description: 'Filter users by role',
+            schema: {
+              type: 'string',
+              enum: ['USER', 'ADMIN'], // Add more roles if needed
+            },
+          },
+          {
+            name: 'dateOfBirth',
+            in: 'query',
+            description: 'Filter users by date of birth',
+            schema: {
+              type: 'string',
+              format: 'date-time',
+            },
+          },
+        ],
         responses: {
           '200': {
             description: 'A list of users',
@@ -50,7 +86,7 @@ export const UserDocs = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/UserInput',
+                $ref: '#/components/schemas/User',
               },
             },
           },
@@ -127,7 +163,7 @@ export const UserDocs = {
           content: {
             'application/json': {
               schema: {
-                $ref: '#/components/schemas/UserInput',
+                $ref: '#/components/schemas/User',
               },
             },
           },
@@ -169,6 +205,75 @@ export const UserDocs = {
           },
           '500': {
             description: 'Internal Server Error',
+          },
+        },
+      },
+    },
+  },
+  components: {
+    schemas: {
+      User: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            format: 'uuid',
+          },
+          name: {
+            type: 'string',
+          },
+          email: {
+            type: 'string',
+            format: 'email',
+          },
+          isEmailVerified: {
+            type: 'boolean',
+          },
+          phoneNumber: {
+            type: 'integer',
+            nullable: true,
+          },
+          biography: {
+            type: 'string',
+            nullable: true,
+          },
+          role: {
+            type: 'string',
+            enum: ['USER', 'ADMIN'], // Add more roles if needed
+          },
+          dateOfBirth: {
+            type: 'string',
+            format: 'date-time',
+            nullable: true,
+          },
+          preferredLanguage: {
+            type: 'string',
+            nullable: true,
+          },
+          events: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/Event',
+            },
+          },
+          churches: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/Church',
+            },
+          },
+          profileImageUrl: {
+            type: 'string',
+            nullable: true,
+          },
+          passwordHash: {
+            type: 'string',
+          },
+          otps: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/Otp',
+            },
           },
         },
       },

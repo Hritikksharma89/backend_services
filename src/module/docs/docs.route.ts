@@ -4,6 +4,6 @@ import { config } from './docs.config'
 import { ROUTE } from '../../core/constant'
 
 const docsRoute = Router()
-docsRoute.route(ROUTE.ROOT).get(swaggerUi.serve, swaggerUi.setup(config))
+docsRoute.use(ROUTE.ROOT, swaggerUi.serve, swaggerUi.setup(config))
 
 export default docsRoute

@@ -87,7 +87,7 @@ export const generateAuthTokens = async (id: string, role: string) => {
   }
 }
 
-export const verifyToken = (token: string) => TokenFactory().verify(token.split(' ')[1])
+export const verifyToken = (token: string) => TokenFactory().verify(token?.split(' ')[1])  
 
 export const generateRegisterVerificationTokens = async (id: string, role: string) => {
   return {
